@@ -88,7 +88,7 @@ class Rubiks_Cube:
         i = -mod_extremity
         # num_pieces = math.pow(n,3) - math.pow(n-2,3)\
         interval_dist = 1
-        print(interval_dist)
+        # print(interval_dist)
         pieces = []
         # Not necessary, just because python does not work in exact arithmetic. 
         max_val = mod_extremity
@@ -146,9 +146,9 @@ class Rubiks_Cube:
                 for e in range(len(pieces)):
                     if(pieces[e].vector[axes] == val):
                         layer.append(pieces[e])
-                layers_from_one_axis.append(np.array(layer))
+                layers_from_one_axis.append(np.array(layer, dtype=object))
                 val+=1
-            all_layers.append(np.array(layers_from_one_axis))
+            all_layers.append(np.array(layers_from_one_axis, dtype=object))
             axes+=1
         for i in range(len(all_layers)):
             all_layers[i] = all_layers[i]
@@ -163,14 +163,14 @@ class Rubiks_Cube:
                     layer.append(p.vector)
                 layer = np.array(layer)
                 axes_perspective.append(layer)
-            axes_perspective = np.array(axes_perspective)
+            axes_perspective = np.array(axes_perspective, dtype=object)
             position_vectors.append(axes_perspective)
         return position_vectors
     def update_piece_vectors(self,pieces):
         piece_vectors = []
         for p in self.pieces:
-            piece_vectors.append(p.vector)
-        return piece_vectors   
+            piece_vectors.append(np.array(p.vector))
+        return np.array(piece_vectors)   
     def __init__(self, n):
         self.n = n
         self.pieces = self.generatePieces(self.n)
@@ -197,11 +197,13 @@ class Rubiks_Cube:
         rotation_matrix = transformation.find_rotation_matrix(c)
 
         if(len(self.transformations_from_solution) > 0):
-            if(rotation_matrix != la.inv(self.transformations_from_solution[-1].find_rotation_matrix(c))):
+            latest_rotation_matrix = self.transformations_from_solution[len(self.transformations_from_solution) - 1].find_rotation_matrix(c)
+            if(np.all(rotation_matrix) != np.all(la.inv(latest_rotation_matrix))):
                 self.transformations_from_solution.append(transformation)
             else:
                 self.transformations_from_solution.pop()
-        
+        else:
+            self.transformations_from_solution.append(transformation)
         operating_perspective = self.position[c]
         # print(len(operating_perspective))
         l_index = 0
@@ -233,26 +235,18 @@ class Rubiks_Cube:
             for l in operating_perspective:
                 for v in l:
                     updated_pieces_from_one_perspective.append(v)
-        # print(self.piece_vectors)
-        # updated_pieces_from_one_perspective = np.array(updated_pieces_from_one_perspective)
         self.position = self.build_layers(updated_pieces_from_one_perspective, self.n)
         self.position_vectors = self.update_position_vectors(self.position)
-        # self.piece_vectors = self.update_piece_vectors(self.pieces)
-        print(len(self.pieces), len(self.position))
+        self.piece_vectors = self.update_piece_vectors(self.pieces)
     def scramble(self,transforms):
         for t in transforms:
             print(t.rotation_plane_coefficients, t.direction)
             self.transform(t)
-            # print(self.position)
-            self.show()
     def show(self):
         # matplotlib
         fig = plt.figure()
         # syntax for 3-D projection
         ax = fig.gca(projection ='3d')
-        # ax.set_xlim(-1,1)
-        # ax.set_ylim(-1,1)
-        # ax.set_zlim(-1,1)     
         x = []
         y = []
         z = []
@@ -283,32 +277,10 @@ class Rubiks_Cube:
         yLabel = ax.set_ylabel('Y-axis', linespacing=3.1)
         zLabel = ax.set_zlabel('Z-Axis', linespacing=3.4)
         # plotting
-        print(len(x),len(y), len(z), len(colours_fx), len(colours_fy), len(colours_fz))
+        # print(len(x),len(y), len(z), len(colours_fx), len(colours_fy), len(colours_fz))
         ax.scatter(x, y, z, c = 'black')
         ax.quiver(colours_ix,colours_iy,colours_iz,colours_fx,colours_fy,colours_fz, color = c_colours, length=0.5, arrow_length_ratio = 0)
-        # PLOTLY
-        # fig = go.Figure(data=go.Cone(
-        #                     x=colours_ix, 
-        #                     y=colours_iy,
-        #                     z=colours_iz,
-        #                     u=colours_fx,
-        #                     v=colours_fy,
-        #                     w=colours_fz,
-        #                     ))
-        # fig.add_trace(go.Scatter3d(
-        #     x=x,
-        #     y=y,
-        #     z=z,
-        #     mode='markers',
-        #     marker=dict(
-        #         size=5,
-        #         color=p_colours
-        #     )
-        # ))
-        # fig.show()
         plt.show()
-
-
 
 # Planes of rotation. For 3x3
 # R: 1x + 0y + 0z = 1
