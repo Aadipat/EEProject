@@ -18,7 +18,7 @@ class Colour:
     def __init__(self,vector,colour):
         self.vector = vector
         self.colour = colour
-
+#class pieces 
 class Piece:
     def __init__(self,x,y,z, n):
         self.x = x
@@ -40,7 +40,7 @@ class Piece:
             self.colours.append(Colour(np.array([0,0,1]),'blue'))
         if(self.z == -(n-1)/2):
             self.colours.append(Colour(np.array([0,0,-1]),'green'))
-
+#function multiply matrices
 def multiply_pieces_matrix(pieces, matrix):
     for v in pieces:
         v.vector = np.matmul(v.vector,matrix)
