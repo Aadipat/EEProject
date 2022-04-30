@@ -13,7 +13,7 @@ import random
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 from fractions import Fraction as frac
-
+# class colors
 class Colour:
     def __init__(self,vector,colour):
         self.vector = vector
