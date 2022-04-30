@@ -13,12 +13,12 @@ import random
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 from fractions import Fraction as frac
-# class colors
+# class for colour
 class Colour:
     def __init__(self,vector,colour):
         self.vector = vector
         self.colour = colour
-#class pieces 
+#class for standard cube piece
 class Piece:
     def __init__(self,x,y,z, n):
         self.x = x
@@ -244,7 +244,7 @@ class Rubiks_Cube:
             print(t.rotation_plane_coefficients, t.direction)
             self.transform(t)
             # print(self.position)
-            cube.show()
+            self.show()
     def show(self):
         # matplotlib
         fig = plt.figure()
@@ -308,6 +308,8 @@ class Rubiks_Cube:
         # fig.show()
         plt.show()
 
+
+
 # Planes of rotation. For 3x3
 # R: 1x + 0y + 0z = 1
 # L: 1x + 0y + 0z = -1
@@ -318,28 +320,6 @@ class Rubiks_Cube:
 
 # Number of perspectives = faces/2 for Megaminx and Cube. 
 # However tetrahedral pyraminx has 4.
-
-
-cube = Rubiks_Cube(3)
-
-# print(cube.position)
-
-print(len(cube.pieces))
-
-cube.show()
-
-# for T in cube.Transformations_possible:
-#     print(T.rotation_plane_coefficients[0], T.rotation_plane_coefficients[1], T.rotation_plane_coefficients[2])
-#     cube.transform(T)
-
-# T = Transform([1.5,0,0],1)
-# cube.transform(T)
-# cube.show()
-
-cube.scramble(select_random_transformations(cube.Transformations_possible,5))
-# print(len(cube.pieces))
-
-# cube.show()
 
 # When solving;
 # Find well known groups and permutations of transformations.
